@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+// Import Angular Material theme
+@use '@angular/material' as mat;
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Define a Material 3 theme
+$task-manager-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+  ),
+));
+
+// Include theme styles for all components
+@include mat.all-component-themes($task-manager-theme);
+
+// Global styles
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

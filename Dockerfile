@@ -45,7 +45,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Copy built backend
-COPY --from=builder /app/dist/apps/backend/backend ./dist
+COPY --from=builder /app/dist/apps/backend ./dist
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 
@@ -57,7 +57,7 @@ CMD ["node", "dist/main.js"]
 FROM nginx:alpine AS production-frontend
 
 # Copy built frontend
-COPY --from=builder /app/dist/apps/frontend/frontend/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/apps/frontend/browser /usr/share/nginx/html
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
