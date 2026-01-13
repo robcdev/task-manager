@@ -5,6 +5,11 @@ dist
 tmp
 out-tsc
 
+# Compiled TypeScript files in libs (source directories)
+libs/**/*.js
+libs/**/*.js.map
+libs/**/*.d.ts
+
 error.log 
 
 # dependencies

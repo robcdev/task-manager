@@ -6,8 +6,10 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
+import { ensureDatabaseExists } from './database/ensure-database';
 
 async function bootstrap() {
+  await ensureDatabaseExists();
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);

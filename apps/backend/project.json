@@ -48,7 +48,7 @@
       "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "command": "nest start --watch",
+        "command": "TS_NODE_PROJECT=./tsconfig.app.json node --require ts-node/register --require tsconfig-paths/register src/main.ts",
         "cwd": "apps/backend"
       },
       "configurations": {
@@ -59,6 +59,20 @@
           ],
           "parallel": false
         }
+      }
+    },
+    "seed": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "TS_NODE_PROJECT=./tsconfig.app.json node --require ts-node/register --require tsconfig-paths/register src/database/seed.ts",
+        "cwd": "apps/backend"
+      }
+    },
+    "seed-clear": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "TS_NODE_PROJECT=./tsconfig.app.json node --require ts-node/register --require tsconfig-paths/register src/database/seed-clear.ts",
+        "cwd": "apps/backend"
       }
     },
     "test": {

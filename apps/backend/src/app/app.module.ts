@@ -19,7 +19,7 @@ import { CategoryModule } from './modules/category/category.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: process.env.TYPEORM_SYNCHRONIZE !== 'false',
       logging: process.env.NODE_ENV === 'development',
     }),
   ],
