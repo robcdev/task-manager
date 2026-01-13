@@ -6,6 +6,7 @@ export interface CategoryDto {
   description?: string;
   createdAt: string;
   updatedAt: string;
+  createdBy: string;
 }
 
 export type CreateCategoryDto = Omit<

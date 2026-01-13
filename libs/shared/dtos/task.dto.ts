@@ -11,6 +11,8 @@ export interface TaskDto {
   dueDate: string;
   createdAt: string;
   updatedAt: string;
+  assignedTo: string;
+  createdBy: string;
 }
 
 export type CreateTaskDto = Omit<TaskDto, 'id' | 'createdAt' | 'updatedAt'>;
