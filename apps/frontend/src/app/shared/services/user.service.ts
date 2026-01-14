@@ -5,6 +5,7 @@ import {
   UserDto,
   CreateUserDto,
   UpdateUserDto,
+  ApiResponse,
 } from '@task-manager/shared';
 import { config } from '../../config/config';
 
@@ -13,23 +14,29 @@ export class UserService {
   private http = inject(HttpClient);
   private baseUrl = `${config.apiUrl}/user`;
 
-  createUser(createUserDto: CreateUserDto): Observable<UserDto> {
-    return this.http.post<UserDto>(this.baseUrl, createUserDto);
+  createUser(createUserDto: CreateUserDto): Observable<ApiResponse<UserDto>> {
+    return this.http.post<ApiResponse<UserDto>>(this.baseUrl, createUserDto);
   }
 
-  findAllUsers(): Observable<UserDto[]> {
-    return this.http.get<UserDto[]>(this.baseUrl);
+  findAllUsers(): Observable<ApiResponse<UserDto[]>> {
+    return this.http.get<ApiResponse<UserDto[]>>(this.baseUrl);
   }
 
-  findUser(id: number): Observable<UserDto> {
-    return this.http.get<UserDto>(`${this.baseUrl}/${id}`);
+  findUser(id: number): Observable<ApiResponse<UserDto>> {
+    return this.http.get<ApiResponse<UserDto>>(`${this.baseUrl}/${id}`);
   }
 
-  updateUser(id: number, updateUserDto: UpdateUserDto): Observable<UserDto> {
-    return this.http.patch<UserDto>(`${this.baseUrl}/${id}`, updateUserDto);
+  updateUser(
+    id: number,
+    updateUserDto: UpdateUserDto
+  ): Observable<ApiResponse<UserDto>> {
+    return this.http.patch<ApiResponse<UserDto>>(
+      `${this.baseUrl}/${id}`,
+      updateUserDto
+    );
   }
 
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  deleteUser(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${id}`);
   }
 }

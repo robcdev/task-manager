@@ -5,6 +5,7 @@ import {
   CategoryDto,
   CreateCategoryDto,
   UpdateCategoryDto,
+  ApiResponse,
 } from '@task-manager/shared';
 import { config } from '../../config/config';
 
@@ -13,29 +14,34 @@ export class CategoryService {
   private http = inject(HttpClient);
   private baseUrl = `${config.apiUrl}/category`;
 
-  createCategory(createCategoryDto: CreateCategoryDto): Observable<CategoryDto> {
-    return this.http.post<CategoryDto>(this.baseUrl, createCategoryDto);
+  createCategory(
+    createCategoryDto: CreateCategoryDto
+  ): Observable<ApiResponse<CategoryDto>> {
+    return this.http.post<ApiResponse<CategoryDto>>(
+      this.baseUrl,
+      createCategoryDto
+    );
   }
 
-  findAllCategories(): Observable<CategoryDto[]> {
-    return this.http.get<CategoryDto[]>(this.baseUrl);
+  findAllCategories(): Observable<ApiResponse<CategoryDto[]>> {
+    return this.http.get<ApiResponse<CategoryDto[]>>(this.baseUrl);
   }
 
-  findCategory(id: number): Observable<CategoryDto> {
-    return this.http.get<CategoryDto>(`${this.baseUrl}/${id}`);
+  findCategory(id: number): Observable<ApiResponse<CategoryDto>> {
+    return this.http.get<ApiResponse<CategoryDto>>(`${this.baseUrl}/${id}`);
   }
 
   updateCategory(
     id: number,
     updateCategoryDto: UpdateCategoryDto
-  ): Observable<CategoryDto> {
-    return this.http.patch<CategoryDto>(
+  ): Observable<ApiResponse<CategoryDto>> {
+    return this.http.patch<ApiResponse<CategoryDto>>(
       `${this.baseUrl}/${id}`,
       updateCategoryDto
     );
   }
 
-  deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  deleteCategory(id: number): Observable<ApiResponse<null>> {
+    return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${id}`);
   }
 }

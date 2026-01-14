@@ -5,6 +5,7 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
   CategoryDto,
+  ApiResponse,
 } from '@task-manager/shared';
 import { Category } from './entities/category.entity';
 
@@ -15,13 +16,18 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryDto> {
+  async create(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<ApiResponse<CategoryDto>> {
     const category = this.categoryRepository.create(createCategoryDto);
     const savedCategory = await this.categoryRepository.save(category);
-    return this.mapToDto(savedCategory);
+    return {
+      data: this.mapToDto(savedCategory),
+      message: 'Category created successfully',
+    };
   }
 
-  async findAll(): Promise<CategoryDto[]> {
+  async findAll(): Promise<ApiResponse<CategoryDto[]>> {
     const categories = await this.categoryRepository.find({
       relations: ['creator'],
       order: {
@@ -29,10 +35,12 @@ export class CategoryService {
       },
     });
 
-    return categories.map((category) => this.mapToDto(category));
+    return {
+      data: categories.map((category) => this.mapToDto(category)),
+    };
   }
 
-  async findOne(id: number): Promise<CategoryDto> {
+  async findOne(id: number): Promise<ApiResponse<CategoryDto>> {
     const category = await this.categoryRepository.findOne({
       where: { id: id.toString() },
       relations: ['creator'],
@@ -42,13 +50,15 @@ export class CategoryService {
       throw new NotFoundException(`Category with ID "${id}" not found`);
     }
 
-    return this.mapToDto(category);
+    return {
+      data: this.mapToDto(category),
+    };
   }
 
   async update(
     id: number,
     updateCategoryDto: UpdateCategoryDto,
-  ): Promise<CategoryDto> {
+  ): Promise<ApiResponse<CategoryDto>> {
     const category = await this.categoryRepository.findOne({
       where: { id: id.toString() },
     });
@@ -59,10 +69,13 @@ export class CategoryService {
 
     Object.assign(category, updateCategoryDto);
     const updatedCategory = await this.categoryRepository.save(category);
-    return this.mapToDto(updatedCategory);
+    return {
+      data: this.mapToDto(updatedCategory),
+      message: 'Category updated successfully',
+    };
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<ApiResponse<null>> {
     const category = await this.categoryRepository.findOne({
       where: { id: id.toString() },
     });
@@ -72,6 +85,10 @@ export class CategoryService {
     }
 
     await this.categoryRepository.remove(category);
+    return {
+      data: null,
+      message: 'Category deleted successfully',
+    };
   }
 
   private mapToDto(category: Category): CategoryDto {
