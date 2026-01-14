@@ -2,6 +2,29 @@ mat-dialog-content {
   width: 100%;
   min-height: 300px;
   padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  form {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .half-width {
+    flex: 1;
+  }
 }
 
 mat-dialog-actions {

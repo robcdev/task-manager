@@ -1,8 +1,90 @@
 <h2 mat-dialog-title>Create Task</h2>
 <mat-dialog-content>
-  <p>This is task creation</p>
+  <form [formGroup]="taskForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" required />
+      @if (taskForm.get('title')?.hasError('required')) {
+        <mat-error>Title is required</mat-error>
+      }
+      @if (taskForm.get('title')?.hasError('minlength')) {
+        <mat-error>Title must be at least 3 characters</mat-error>
+      }
+      @if (taskForm.get('title')?.hasError('maxlength')) {
+        <mat-error>Title cannot exceed 100 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (taskForm.get('description')?.hasError('maxlength')) {
+        <mat-error>Description cannot exceed 500 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status" required>
+          @for (status of taskStatuses; track status) {
+            <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority" required>
+          @for (priority of taskPriorities; track priority) {
+            <mat-option [value]="priority">{{ priority }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category</mat-label>
+      <input matInput formControlName="categoryId" required placeholder="Category ID" />
+      @if (taskForm.get('categoryId')?.hasError('required')) {
+        <mat-error>Category is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Due Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate" required />
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      @if (taskForm.get('dueDate')?.hasError('required')) {
+        <mat-error>Due date is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Assigned To</mat-label>
+      <input matInput formControlName="assignedTo" required placeholder="User ID" />
+      @if (taskForm.get('assignedTo')?.hasError('required')) {
+        <mat-error>Assigned To is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Created By</mat-label>
+      <input matInput formControlName="createdBy" required placeholder="User ID" />
+      @if (taskForm.get('createdBy')?.hasError('required')) {
+        <mat-error>Created By is required</mat-error>
+      }
+    </mat-form-field>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSave()"
+    [disabled]="!taskForm.valid">
+    Save
+  </button>
 </mat-dialog-actions>

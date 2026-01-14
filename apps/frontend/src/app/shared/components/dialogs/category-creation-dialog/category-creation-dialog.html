@@ -1,8 +1,38 @@
 <h2 mat-dialog-title>Create Category</h2>
 <mat-dialog-content>
-  <p>This is category creation</p>
+  <form [formGroup]="categoryForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      @if (categoryForm.get('name')?.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      }
+      @if (categoryForm.get('name')?.hasError('minlength')) {
+        <mat-error>Name must be at least 3 characters</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Created By</mat-label>
+      <input matInput formControlName="createdBy" required />
+      @if (categoryForm.get('createdBy')?.hasError('required')) {
+        <mat-error>Created By is required</mat-error>
+      }
+    </mat-form-field>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSave()"
+    [disabled]="!categoryForm.valid">
+    Save
+  </button>
 </mat-dialog-actions>
