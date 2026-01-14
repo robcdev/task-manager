@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CustomCard } from '../../../shared/components/custom-card/custom-card';
 
 @Component({
@@ -6,5 +6,6 @@ import { CustomCard } from '../../../shared/components/custom-card/custom-card';
   imports: [CustomCard],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskList {}
