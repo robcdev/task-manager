@@ -1,25 +1,79 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from '@task-manager/shared';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateUserDto, UpdateUserDto, UserDto } from '@task-manager/shared';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
+    const user = this.userRepository.create(createUserDto);
+    const savedUser = await this.userRepository.save(user);
+    return this.mapToDto(savedUser);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll(): Promise<UserDto[]> {
+    const users = await this.userRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return users.map((user) => this.mapToDto(user));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<UserDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: id.toString() },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    return this.mapToDto(user);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: id.toString() },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    Object.assign(user, updateUserDto);
+    const updatedUser = await this.userRepository.save(user);
+    return this.mapToDto(updatedUser);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: id.toString() },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    await this.userRepository.remove(user);
+  }
+
+  private mapToDto(user: User): UserDto {
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    };
   }
 }
