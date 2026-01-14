@@ -15,6 +15,9 @@
 }
 
 .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 20px 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   background: rgba(0, 0, 0, 0.02);
@@ -25,6 +28,12 @@
   font-size: 20px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.87);
+}
+
+.card-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .card-content {

@@ -1,8 +1,11 @@
 <div class="custom-card">
   @if(title()) {
-    <div class="card-header">
-      <h2 class="card-title">{{ title() }}</h2>
+  <div class="card-header">
+    <h2 class="card-title">{{ title() }}</h2>
+    <div class="card-header-right">
+      <ng-content select="[card-header-right]"></ng-content>
     </div>
+  </div>
   }
   <div class="card-content">
     <ng-content></ng-content>
