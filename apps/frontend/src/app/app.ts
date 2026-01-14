@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { NxWelcome } from './nx-welcome';
+import { MainNavComponent } from './shared/components/main-nav/main-nav.component';
 
 @Component({
-  imports: [NxWelcome, RouterModule, MatButtonModule],
+  imports: [MainNavComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

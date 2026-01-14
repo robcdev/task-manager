@@ -7,22 +7,25 @@
 @include mat.core();
 
 // Define a Material 3 theme
-$task-manager-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$azure-palette,
-  ),
-));
+$task-manager-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: mat.$blue-palette,
+    ),
+  )
+);
 
 // Include theme styles for all components
 @include mat.all-component-themes($task-manager-theme);
 
 // Global styles
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
