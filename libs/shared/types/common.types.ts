@@ -4,9 +4,15 @@ export type ApiResponse<T> = {
   error?: string;
 };
 
+export type PaginationQuery = {
+  page?: number;
+  limit?: number;
+};
+
 export type PaginatedResponse<T> = {
   data: T[];
   total: number;
   page: number;
-  pageSize: number;
+  limit: number;
+  totalPages: number;
 };
