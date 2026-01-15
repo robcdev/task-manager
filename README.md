@@ -1,12 +1,35 @@
 # Task Manager
 
-A full-stack task management app built with an Angular frontend and a NestJS API, using PostgreSQL for persistence. The repo is an Nx workspace.
+A full-stack task management application built with modern web technologies to ensure type safety, maintainability, and scalability. The project leverages a monorepo architecture to share libraries, types, and interfaces across the frontend and backend, enabling consistent data models and reducing code duplication.
 
-## What's inside
+## Technologies
 
-- `apps/frontend`: Angular UI (Material)
-- `apps/backend`: NestJS API (TypeORM)
-- `libs/shared`: shared DTOs/types used by both apps
+- **Frontend**: Angular 18+ with Angular Material for UI components
+- **Backend**: NestJS with TypeORM for database operations
+- **Database**: PostgreSQL 16+ for data persistence
+- **Monorepo**: Nx workspace for efficient project management and code sharing
+- **Containerization**: Docker and Docker Compose for consistent development environments
+
+## Architecture
+
+The monorepo structure enables seamless code sharing and type safety across the entire stack:
+
+- `apps/frontend`: Angular application with Material Design components
+- `apps/backend`: NestJS RESTful API with TypeORM entities
+- `libs/shared`: Shared libraries containing DTOs, types, and interfaces used by both applications
+
+## Planned features
+
+- **Task Detail View**: Enhance UI to display individual task details alongside the list/table view for improved visibility and context
+- **User Authentication & Settings**: Implement login module with current user recognition and a dedicated settings section for user preferences
+- **Theme Customization**: Add support for multiple UI themes (light/dark mode) with user-configurable preferences
+- **Timezone Support**: Enable timezone selection and automatic conversion for date/time displays
+- **Notification System**: Replace browser alerts with a toast notification system for better user experience and non-intrusive messaging
+- **Responsive Table Design**: Optimize table layout for mobile and tablet devices with adaptive column display and touch-friendly interactions
+- **Virtual Scrolling**: Implement virtual scrolling in tables to efficiently handle large datasets and improve rendering performance
+- **Flexible Data Loading**: Add "Load More" functionality as an alternative to traditional pagination for seamless infinite scroll experiences
+- **Advanced Filtering**: Enable comprehensive filtering capabilities to search and filter tasks by user, name, description, date ranges, and status
+- **Test Coverage**: Implement comprehensive unit tests and end-to-end tests to ensure code quality and application reliability
 
 ## Prerequisites
 
