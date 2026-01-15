@@ -4,6 +4,11 @@ import { DataSource } from 'typeorm';
 import { AppModule } from '../app/app.module';
 import { ensureDatabaseExists } from './ensure-database';
 
+/**
+ * Clear seeded data from the database.
+ *
+ * @returns {Promise<void>}
+ */
 const clearDatabase = async () => {
   await ensureDatabaseExists();
 
@@ -22,6 +27,12 @@ const clearDatabase = async () => {
   }
 };
 
+/**
+ * Run the seed clear routine and exit with failure on error.
+ *
+ * @param {unknown} error - caught error
+ * @returns {void}
+ */
 clearDatabase().catch((error) => {
   console.error('Seed clear failed:', error);
   process.exit(1);

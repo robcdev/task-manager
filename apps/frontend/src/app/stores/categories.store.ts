@@ -21,6 +21,13 @@ export class CategoriesStore {
   readonly currentPage = this._currentPage.asReadonly();
   readonly total = this._total.asReadonly();
 
+  /**
+   * Load categories with pagination.
+   *
+   * @param {number} page - page number (1-based)
+   * @param {number} limit - page size
+   * @returns {void}
+   */
   loadCategories(page = 1, limit = 10): void {
     this._loading.set(true);
     this._error.set(null);
@@ -41,6 +48,12 @@ export class CategoriesStore {
     });
   }
 
+  /**
+   * Create a new category and refresh the first page.
+   *
+   * @param {CreateCategoryDto} createCategoryDto - category payload
+   * @returns {void}
+   */
   createCategory(createCategoryDto: CreateCategoryDto): void {
     this._loading.set(true);
     this._error.set(null);
@@ -56,6 +69,13 @@ export class CategoriesStore {
     });
   }
 
+  /**
+   * Update a category and refresh the current page.
+   *
+   * @param {string} id - category id
+   * @param {UpdateCategoryDto} updateCategoryDto - update category data
+   * @returns {void}
+   */
   updateCategory(id: string, updateCategoryDto: UpdateCategoryDto): void {
     this._loading.set(true);
     this._error.set(null);
@@ -71,6 +91,12 @@ export class CategoriesStore {
     });
   }
 
+  /**
+   * Delete a category and refresh pagination.
+   *
+   * @param {string} id - category id
+   * @returns {void}
+   */
   deleteCategory(id: string): void {
     this._loading.set(true);
     this._error.set(null);

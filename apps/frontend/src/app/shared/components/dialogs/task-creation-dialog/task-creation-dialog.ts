@@ -82,10 +82,20 @@ export class TaskCreationDialog {
     });
   }
 
+  /**
+   * Close the dialog without saving.
+   *
+   * @returns {void}
+   */
   onCancel(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Validate and submit the form, then close the dialog.
+   *
+   * @returns {void}
+   */
   onSave(): void {
     if (this.taskForm.valid) {
       const taskData: CreateTaskDto = {

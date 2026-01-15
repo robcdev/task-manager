@@ -54,12 +54,24 @@ export class UsersTable {
     });
   });
 
+  /**
+   * Handle pagination change event and load users accordingly.
+   *
+   * @param {PaginationEvent} event - pagination change event
+   * @returns {void}
+   */
   onPaginationChange(event: PaginationEvent): void {
     const page = event.pageIndex + 1;
     const limit = event.pageSize;
     this.usersStore.loadUsers(page, limit);
   }
 
+  /**
+   * Save a user row.
+   *
+   * @param {{ index: number; data: any }} event - row save event payload
+   * @returns {void}
+   */
   onRowSave(event: { index: number; data: any }): void {
     const userData: UpdateUserDto = {
       username: event.data.username,
@@ -75,6 +87,12 @@ export class UsersTable {
     }
   }
 
+  /**
+   * Delete a user row.
+   *
+   * @param {any} row - user row data
+   * @returns {void}
+   */
   onRowDelete(row: any): void {
     try {
       this.usersStore.deleteUser(row.id);

@@ -21,6 +21,13 @@ export class TasksStore {
   readonly currentPage = this._currentPage.asReadonly();
   readonly total = this._total.asReadonly();
 
+  /**
+   * Load tasks with pagination.
+   *
+   * @param {number} page - page number (1-based)
+   * @param {number} limit - page size
+   * @returns {void}
+   */
   loadTasks(page = 1, limit = 10): void {
     this._loading.set(true);
     this._error.set(null);
@@ -41,6 +48,12 @@ export class TasksStore {
     });
   }
 
+  /**
+   * Create a new task and refresh the first page.
+   *
+   * @param {CreateTaskDto} createTaskDto - task payload
+   * @returns {void}
+   */
   createTask(createTaskDto: CreateTaskDto): void {
     this._loading.set(true);
     this._error.set(null);
@@ -57,6 +70,13 @@ export class TasksStore {
     });
   }
 
+  /**
+   * Update a task and refresh the current page.
+   *
+   * @param {string} id - task id
+   * @param {UpdateTaskDto} updateTaskDto - update task data
+   * @returns {void}
+   */
   updateTask(id: string, updateTaskDto: UpdateTaskDto): void {
     this._loading.set(true);
     this._error.set(null);
@@ -73,6 +93,12 @@ export class TasksStore {
     });
   }
 
+  /**
+   * Delete a task and refresh pagination.
+   *
+   * @param {string} id - task id
+   * @returns {void}
+   */
   deleteTask(id: string): void {
     this._loading.set(true);
     this._error.set(null);

@@ -34,10 +34,20 @@ export class UserCreationDialog {
     });
   }
 
+  /**
+   * Close the dialog without saving.
+   *
+   * @returns {void}
+   */
   onCancel(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Validate and submit the form, then close the dialog.
+   *
+   * @returns {void}
+   */
   onSave(): void {
     if (this.userForm.valid) {
       const userData: CreateUserDto = this.userForm.value;

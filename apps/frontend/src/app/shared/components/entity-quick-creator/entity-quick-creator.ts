@@ -50,6 +50,11 @@ export class EntityQuickCreator {
     },
   ];
 
+  /**
+   * Open the task creation dialog and persist on save.
+   *
+   * @returns {void}
+   */
   private createTask(): void {
     const dialogRef = this.dialog.open(TaskCreationDialog, dialogProperties);
 
@@ -63,6 +68,11 @@ export class EntityQuickCreator {
     });
   }
 
+  /**
+   * Open the category creation dialog and persist on save.
+   *
+   * @returns {void}
+   */
   private createCategory(): void {
     const dialogRef = this.dialog.open(
       CategoryCreationDialog,
@@ -79,6 +89,11 @@ export class EntityQuickCreator {
     });
   }
 
+  /**
+   * Open the user creation dialog and persist on save.
+   *
+   * @returns {void}
+   */
   private createUser(): void {
     const dialogRef = this.dialog.open(UserCreationDialog, dialogProperties);
 

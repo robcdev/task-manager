@@ -58,6 +58,12 @@ export class EditableTable {
   editingRowIndex = signal<number | null>(null);
   editingRowData = signal<any>(null);
 
+  /**
+   * Emit pagination change events.
+   *
+   * @param {any} event - paginator event payload
+   * @returns {void}
+   */
   onPageChange(event: any): void {
     this.paginationChange.emit({
       pageIndex: event.pageIndex,
@@ -66,6 +72,14 @@ export class EditableTable {
     });
   }
 
+  /**
+   * Resolve a display value for a table cell.
+   *
+   * @param {any} item - row data
+   * @param {string} field - column field path
+   * @param {TableColumn} [column] - column configuration
+   * @returns {any} - formatted cell value
+   */
   getColumnValue(item: any, field: string, column?: TableColumn): any {
     const value = field.split('.').reduce((obj, key) => obj?.[key], item);
 
@@ -81,20 +95,44 @@ export class EditableTable {
     return value ?? '-';
   }
 
+  /**
+   * Check if a given row is in edit mode.
+   *
+   * @param {number} rowIndex - row index
+   * @returns {boolean} - true when editing
+   */
   isEditing(rowIndex: number): boolean {
     return this.editingRowIndex() === rowIndex;
   }
 
+  /**
+   * Enable edit mode for a row.
+   *
+   * @param {number} rowIndex - row index
+   * @param {any} row - row data
+   * @returns {void}
+   */
   onEdit(rowIndex: number, row: any): void {
     this.editingRowIndex.set(rowIndex);
     this.editingRowData.set({ ...row });
   }
 
+  /**
+   * Cancel the current edit session.
+   *
+   * @returns {void}
+   */
   onCancel(): void {
     this.editingRowIndex.set(null);
     this.editingRowData.set(null);
   }
 
+  /**
+   * Save the current edit session.
+   *
+   * @param {number} rowIndex - row index
+   * @returns {void}
+   */
   onSave(rowIndex: number): void {
     if (this.editingRowData()) {
       this.rowSave.emit({
@@ -106,11 +144,24 @@ export class EditableTable {
     this.editingRowData.set(null);
   }
 
+  /**
+   * Emit a delete event for a row.
+   *
+   * @param {any} row - row data
+   * @returns {void}
+   */
   onDelete(row: any): void {
     // Placeholder for delete functionality
     this.rowDelete.emit(row);
   }
 
+  /**
+   * Update the editing model for a field.
+   *
+   * @param {string} field - column field path
+   * @param {any} value - new value
+   * @returns {void}
+   */
   onFieldChange(field: string, value: any): void {
     const currentData = this.editingRowData();
     if (currentData) {
@@ -127,6 +178,12 @@ export class EditableTable {
     }
   }
 
+  /**
+   * Read the current editing value for a field.
+   *
+   * @param {string} field - column field path
+   * @returns {any} - field value
+   */
   getEditingValue(field: string): any {
     const data = this.editingRowData();
     if (!data) return null;
@@ -134,6 +191,12 @@ export class EditableTable {
     return field.split('.').reduce((obj, key) => obj?.[key], data);
   }
 
+  /**
+   * Determine if a column is editable.
+   *
+   * @param {TableColumn} column - column configuration
+   * @returns {boolean} - true when editable
+   */
   isEditable(column: TableColumn): boolean {
     return column.editable !== false;
   }

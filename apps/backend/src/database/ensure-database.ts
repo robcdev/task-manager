@@ -2,11 +2,23 @@ import { Client } from 'pg';
 
 const DEFAULT_POSTGRES_DB = 'postgres';
 
+/**
+ * Resolve the PostgreSQL port from env or default.
+ *
+ * @returns {number} - postgres port
+ */
 const getPostgresPort = () => {
   const parsed = parseInt(process.env.POSTGRES_PORT ?? '', 10);
   return Number.isNaN(parsed) ? 5432 : parsed;
 };
 
+/**
+ * Validate the configured database name.
+ *
+ * @param {string} databaseName - database name to validate
+ * @returns {void}
+ * @throws {Error} - if database name is missing or contains invalid characters
+ */
 const assertDatabaseName = (databaseName: string) => {
   if (!databaseName) {
     throw new Error('POSTGRES_DB is required to connect to the database.');
@@ -18,6 +30,11 @@ const assertDatabaseName = (databaseName: string) => {
   }
 };
 
+/**
+ * Ensure the configured database exists, creating it if missing.
+ *
+ * @returns {Promise<void>}
+ */
 export const ensureDatabaseExists = async () => {
   const databaseName = process.env.POSTGRES_DB ?? '';
   assertDatabaseName(databaseName);

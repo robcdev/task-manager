@@ -42,10 +42,20 @@ export class CategoryCreationDialog {
     });
   }
 
+  /**
+   * Close the dialog without saving.
+   *
+   * @returns {void}
+   */
   onCancel(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Validate and submit the form, then close the dialog.
+   *
+   * @returns {void}
+   */
   onSave(): void {
     if (this.categoryForm.valid) {
       const categoryData: CreateCategoryDto = this.categoryForm.value;

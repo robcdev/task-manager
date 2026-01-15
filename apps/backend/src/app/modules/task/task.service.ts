@@ -19,6 +19,12 @@ export class TaskService {
     private taskRepository: Repository<Task>,
   ) {}
 
+  /**
+   * Create a new task.
+   *
+   * @param {CreateTaskDto} createTaskDto - task payload
+   * @returns {Promise<ApiResponse<TaskDto>>} - response with created task
+   */
   async create(createTaskDto: CreateTaskDto): Promise<ApiResponse<TaskDto>> {
     const task = this.taskRepository.create(createTaskDto);
     const savedTask = await this.taskRepository.save(task);
@@ -28,6 +34,12 @@ export class TaskService {
     };
   }
 
+  /**
+   * Get all tasks.
+   *
+   * @param {PaginationQuery} paginationQuery - pagination query
+   * @returns {Promise<PaginatedResponse<TaskDto>>} - paginated response with tasks
+   */
   async findAll(
     paginationQuery: PaginationQuery,
   ): Promise<PaginatedResponse<TaskDto>> {
@@ -55,6 +67,13 @@ export class TaskService {
     };
   }
 
+  /**
+   * Find a task by ID.
+   *
+   * @param {string} id - task ID
+   * @returns {Promise<ApiResponse<TaskDto>>} - response with task data
+   * @throws {NotFoundException} - if task with given ID not found
+   */
   async findOne(id: string): Promise<ApiResponse<TaskDto>> {
     const task = await this.taskRepository.findOne({
       where: { id },
@@ -70,6 +89,14 @@ export class TaskService {
     };
   }
 
+  /**
+   * Update a task by ID.
+   *
+   * @param {string} id - task ID
+   * @param {UpdateTaskDto} updateTaskDto - update task data
+   * @returns {Promise<ApiResponse<TaskDto>>} - response with task data
+   * @throws {NotFoundException} - if task with given ID not found
+   */
   async update(
     id: string,
     updateTaskDto: UpdateTaskDto,
@@ -90,6 +117,13 @@ export class TaskService {
     };
   }
 
+  /**
+   * Delete a task by ID.
+   *
+   * @param {string} id - task ID
+   * @returns {Promise<ApiResponse<null>>} - response with deletion result
+   * @throws {NotFoundException} - if task with given ID not found
+   */
   async remove(id: string): Promise<ApiResponse<null>> {
     const task = await this.taskRepository.findOne({
       where: { id },
@@ -106,6 +140,12 @@ export class TaskService {
     };
   }
 
+  /**
+   * Maps a Task entity to a TaskDto.
+   *
+   * @param {Task} task - Task entity
+   * @returns {TaskDto} - TaskDto
+   */
   private mapToDto(task: Task): TaskDto {
     return {
       id: task.id,

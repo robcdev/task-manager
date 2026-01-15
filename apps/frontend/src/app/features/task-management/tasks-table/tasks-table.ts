@@ -85,12 +85,24 @@ export class TasksTable {
     });
   });
 
+  /**
+   * Handle pagination change event and load tasks accordingly.
+   *
+   * @param {PaginationEvent} event - pagination change event
+   * @returns {void}
+   */
   onPaginationChange(event: PaginationEvent): void {
     const page = event.pageIndex + 1;
     const limit = event.pageSize;
     this.tasksStore.loadTasks(page, limit);
   }
 
+  /**
+   * Save a task row.
+   *
+   * @param {{ index: number; data: any }} event - row save event payload
+   * @returns {void}
+   */
   onRowSave(event: { index: number; data: any }): void {
     const taskData: UpdateTaskDto = {
       categoryId: event.data.category,
@@ -108,6 +120,12 @@ export class TasksTable {
     }
   }
 
+  /**
+   * Delete a task row.
+   *
+   * @param {any} row - task row data
+   * @returns {void}
+   */
   onRowDelete(row: any): void {
     try {
       this.tasksStore.deleteTask(row.id);

@@ -16,6 +16,12 @@ export class ContextMenu {
   menuItems = input.required<ContextMenuItem[]>();
   icon = input<string>('more_vert');
 
+  /**
+   * Handle menu item click.
+   *
+   * @param {ContextMenuItem} item - selected menu item
+   * @returns {void}
+   */
   onItemClick(item: ContextMenuItem): void {
     if (!item.disabled) {
       item.action();

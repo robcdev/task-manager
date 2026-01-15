@@ -19,6 +19,12 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
+  /**
+   * Create a new category.
+   *
+   * @param {CreateCategoryDto} createCategoryDto - category payload
+   * @returns {Promise<ApiResponse<CategoryDto>>} - response with created category
+   */
   async create(
     createCategoryDto: CreateCategoryDto,
   ): Promise<ApiResponse<CategoryDto>> {
@@ -30,6 +36,12 @@ export class CategoryService {
     };
   }
 
+  /**
+   * Get all categories.
+   *
+   * @param {PaginationQuery} paginationQuery - pagination query
+   * @returns {Promise<PaginatedResponse<CategoryDto>>} - paginated response with categories
+   */
   async findAll(
     paginationQuery: PaginationQuery,
   ): Promise<PaginatedResponse<CategoryDto>> {
@@ -57,6 +69,13 @@ export class CategoryService {
     };
   }
 
+  /**
+   * Find a category by ID.
+   *
+   * @param {string} id - category ID
+   * @returns {Promise<ApiResponse<CategoryDto>>} - promise with category data
+   * @throws {NotFoundException} - if category with given ID not found
+   */
   async findOne(id: string): Promise<ApiResponse<CategoryDto>> {
     const category = await this.categoryRepository.findOne({
       where: { id },
@@ -72,6 +91,14 @@ export class CategoryService {
     };
   }
 
+  /**
+   * Update a category.
+   *
+   * @param {string} id - category ID
+   * @param {UpdateCategoryDto} updateCategoryDto - update category data
+   * @returns {Promise<ApiResponse<CategoryDto>>} - promise with category data
+   * @throws {NotFoundException} - if category with given ID not found
+   */
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
@@ -92,6 +119,13 @@ export class CategoryService {
     };
   }
 
+  /**
+   * Delete a category by ID.
+   *
+   * @param {string} id - category ID
+   * @returns {Promise<ApiResponse<null>>} - promise with category deletion result
+   * @throws {NotFoundException} - if category with given ID not found
+   */
   async remove(id: string): Promise<ApiResponse<null>> {
     const category = await this.categoryRepository.findOne({
       where: { id },
@@ -108,6 +142,12 @@ export class CategoryService {
     };
   }
 
+  /**
+   * Maps a Category entity to a CategoryDto.
+   *
+   * @param {Category} category - Category entity
+   * @returns {CategoryDto} - CategoryDto
+   */
   private mapToDto(category: Category): CategoryDto {
     return {
       id: category.id,

@@ -59,12 +59,24 @@ export class CategoriesTable {
     });
   });
 
+  /**
+   * Handle pagination change event and load categories accordingly.
+   *
+   * @param {PaginationEvent} event - pagination change event
+   * @returns {void}
+   */
   onPaginationChange(event: PaginationEvent): void {
     const page = event.pageIndex + 1;
     const limit = event.pageSize;
     this.categoriesStore.loadCategories(page, limit);
   }
 
+  /**
+   * Save a category row.
+   *
+   * @param {{ index: number; data: any }} event - row save event payload
+   * @returns {void}
+   */
   onRowSave(event: { index: number; data: any }): void {
     const categoryData: UpdateCategoryDto = {
       name: event.data.name,
@@ -79,6 +91,12 @@ export class CategoriesTable {
     }
   }
 
+  /**
+   * Delete a category row.
+   *
+   * @param {any} row - category row data
+   * @returns {void}
+   */
   onRowDelete(row: any): void {
     try {
       this.categoriesStore.deleteCategory(row.id);

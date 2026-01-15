@@ -8,6 +8,11 @@ import { Task } from '../app/modules/task/entities/task.entity';
 import { TaskPriority, TaskStatus } from '@task-manager/shared';
 import { ensureDatabaseExists } from './ensure-database';
 
+/**
+ * Seed the database with baseline users, categories, and tasks.
+ *
+ * @returns {Promise<void>}
+ */
 const seedDatabase = async () => {
   await ensureDatabaseExists();
 
@@ -94,6 +99,12 @@ const seedDatabase = async () => {
   }
 };
 
+/**
+ * Run the seed routine and exit with failure on error.
+ *
+ * @param {unknown} error - caught error
+ * @returns {void}
+ */
 seedDatabase().catch((error) => {
   console.error('Seed failed:', error);
   process.exit(1);

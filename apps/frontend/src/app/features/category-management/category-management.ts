@@ -19,6 +19,11 @@ export class CategoryManagement implements OnInit {
   protected categories = this.categoriesStore.categories;
   protected users = this.usersStore.users;
 
+  /**
+   * Load categories and users on init.
+   *
+   * @returns {void}
+   */
   ngOnInit(): void {
     this.categoriesStore.loadCategories();
     this.usersStore.loadUsers();

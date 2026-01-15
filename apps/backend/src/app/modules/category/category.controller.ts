@@ -24,6 +24,12 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  /**
+   * Create a new category.
+   *
+   * @param {CreateCategoryDto} createCategoryDto - category payload
+   * @returns {Promise<ApiResponse<CategoryDto>>} - response with created category
+   */
   create(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<ApiResponse<CategoryDto>> {
@@ -31,6 +37,13 @@ export class CategoryController {
   }
 
   @Get()
+  /**
+   * Get paginated categories.
+   *
+   * @param {number} page - page number (1-based)
+   * @param {number} limit - page size
+   * @returns {Promise<PaginatedResponse<CategoryDto>>} - paginated response with categories
+   */
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(25), ParseIntPipe) limit: number,
@@ -39,11 +52,24 @@ export class CategoryController {
   }
 
   @Get(':id')
+  /**
+   * Find a category by ID.
+   *
+   * @param {string} id - category ID
+   * @returns {Promise<ApiResponse<CategoryDto>>} - response with category data
+   */
   findOne(@Param('id') id: string): Promise<ApiResponse<CategoryDto>> {
     return this.categoryService.findOne(id);
   }
 
   @Patch(':id')
+  /**
+   * Update a category by ID.
+   *
+   * @param {string} id - category ID
+   * @param {UpdateCategoryDto} updateCategoryDto - update category data
+   * @returns {Promise<ApiResponse<CategoryDto>>} - response with category data
+   */
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -52,6 +78,12 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  /**
+   * Delete a category by ID.
+   *
+   * @param {string} id - category ID
+   * @returns {Promise<ApiResponse<null>>} - response with deletion result
+   */
   remove(@Param('id') id: string): Promise<ApiResponse<null>> {
     return this.categoryService.remove(id);
   }

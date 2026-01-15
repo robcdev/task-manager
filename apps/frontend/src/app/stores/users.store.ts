@@ -21,6 +21,13 @@ export class UsersStore {
   readonly currentPage = this._currentPage.asReadonly();
   readonly total = this._total.asReadonly();
 
+  /**
+   * Load users with pagination.
+   *
+   * @param {number} page - page number (1-based)
+   * @param {number} limit - page size
+   * @returns {void}
+   */
   loadUsers(page = 1, limit = 10): void {
     this._loading.set(true);
     this._error.set(null);
@@ -41,6 +48,12 @@ export class UsersStore {
     });
   }
 
+  /**
+   * Create a new user and refresh the first page.
+   *
+   * @param {CreateUserDto} createUserDto - user payload
+   * @returns {void}
+   */
   createUser(createUserDto: CreateUserDto): void {
     this._loading.set(true);
     this._error.set(null);
@@ -56,6 +69,13 @@ export class UsersStore {
     });
   }
 
+  /**
+   * Update a user and refresh the current page.
+   *
+   * @param {string} id - user id
+   * @param {UpdateUserDto} updateUserDto - update user data
+   * @returns {void}
+   */
   updateUser(id: string, updateUserDto: UpdateUserDto): void {
     this._loading.set(true);
     this._error.set(null);
@@ -71,6 +91,12 @@ export class UsersStore {
     });
   }
 
+  /**
+   * Delete a user and refresh pagination.
+   *
+   * @param {string} id - user id
+   * @returns {void}
+   */
   deleteUser(id: string): void {
     this._loading.set(true);
     this._error.set(null);

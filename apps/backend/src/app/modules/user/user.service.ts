@@ -19,6 +19,12 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Create a new user.
+   *
+   * @param {CreateUserDto} createUserDto - user payload
+   * @returns {Promise<ApiResponse<UserDto>>} - response with created user
+   */
   async create(createUserDto: CreateUserDto): Promise<ApiResponse<UserDto>> {
     const user = this.userRepository.create(createUserDto);
     const savedUser = await this.userRepository.save(user);
@@ -28,6 +34,12 @@ export class UserService {
     };
   }
 
+  /**
+   * Get all users.
+   *
+   * @param {PaginationQuery} paginationQuery - pagination query
+   * @returns {Promise<PaginatedResponse<UserDto>>} - paginated response with users
+   */
   async findAll(
     paginationQuery: PaginationQuery,
   ): Promise<PaginatedResponse<UserDto>> {
@@ -54,6 +66,13 @@ export class UserService {
     };
   }
 
+  /**
+   * Find a user by ID.
+   *
+   * @param {string} id - user ID
+   * @returns {Promise<ApiResponse<UserDto>>} - response with user data
+   * @throws {NotFoundException} - if user with given ID not found
+   */
   async findOne(id: string): Promise<ApiResponse<UserDto>> {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -68,6 +87,14 @@ export class UserService {
     };
   }
 
+  /**
+   * Update a user by ID.
+   *
+   * @param {string} id - user ID
+   * @param {UpdateUserDto} updateUserDto - update user data
+   * @returns {Promise<ApiResponse<UserDto>>} - response with user data
+   * @throws {NotFoundException} - if user with given ID not found
+   */
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
@@ -88,6 +115,13 @@ export class UserService {
     };
   }
 
+  /**
+   * Delete a user by ID.
+   *
+   * @param {string} id - user ID
+   * @returns {Promise<ApiResponse<null>>} - response with deletion result
+   * @throws {NotFoundException} - if user with given ID not found
+   */
   async remove(id: string): Promise<ApiResponse<null>> {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -104,6 +138,12 @@ export class UserService {
     };
   }
 
+  /**
+   * Maps a User entity to a UserDto.
+   *
+   * @param {User} user - User entity
+   * @returns {UserDto} - UserDto
+   */
   private mapToDto(user: User): UserDto {
     return {
       id: user.id,
