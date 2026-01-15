@@ -4,14 +4,113 @@
     <div class="table-header">
       @for (column of columns(); track column.field) {
       <div class="table-cell header-cell">{{ column.header }}</div>
+      } @if (showActions()) {
+      <div class="table-cell header-cell actions-cell">Actions</div>
       }
     </div>
 
     <!-- Data Rows -->
-    @if (data().length > 0) { @for (row of data(); track $index) {
+    @if (data().length > 0) { @for (row of data(); track $index; let rowIndex = $index) {
     <div class="table-row">
       @for (column of columns(); track column.field) {
-      <div class="table-cell">{{ getColumnValue(row, column.field) }}</div>
+      <div class="table-cell">
+        @if (isEditing(rowIndex)) {
+        <!-- Editable Fields -->
+        @switch (column.type) { @case ('textarea') {
+        <mat-form-field appearance="outline" class="table-input">
+          <textarea
+            matInput
+            [value]="getEditingValue(column.field)"
+            (input)="onFieldChange(column.field, $any($event.target).value)"
+            rows="2"
+          ></textarea>
+        </mat-form-field>
+        } @case ('select') {
+        <mat-form-field appearance="outline" class="table-input">
+          <mat-select
+            [value]="getEditingValue(column.field)"
+            (selectionChange)="onFieldChange(column.field, $event.value)"
+          >
+            @for (option of column.options; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        } @case ('date') {
+        <mat-form-field appearance="outline" class="table-input">
+          <input
+            matInput
+            [matDatepicker]="datePicker"
+            [value]="getEditingValue(column.field)"
+            (dateChange)="onFieldChange(column.field, $event.value)"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="datePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+        } @case ('number') {
+        <mat-form-field appearance="outline" class="table-input">
+          <input
+            matInput
+            type="number"
+            [value]="getEditingValue(column.field)"
+            (input)="onFieldChange(column.field, $any($event.target).valueAsNumber)"
+          />
+        </mat-form-field>
+        } @default {
+        <mat-form-field appearance="outline" class="table-input">
+          <input
+            matInput
+            [value]="getEditingValue(column.field)"
+            (input)="onFieldChange(column.field, $any($event.target).value)"
+          />
+        </mat-form-field>
+        } } } @else {
+        <!-- Display Mode -->
+        {{ getColumnValue(row, column.field, column) }} }
+      </div>
+      } @if (showActions()) {
+      <div class="table-cell actions-cell">
+        @if (isEditing(rowIndex)) {
+        <!-- Save Button -->
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="onSave(rowIndex)"
+          title="Save"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="onCancel()"
+          title="Cancel"
+        >
+          <mat-icon>cancel</mat-icon>
+        </button>
+        } @else {
+        <!-- Edit and Delete Buttons -->
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="onEdit(rowIndex, row)"
+          title="Edit"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="onDelete(row)"
+          title="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </div>
       }
     </div>
     } } @else {

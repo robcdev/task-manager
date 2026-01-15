@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
 import { EditableTable } from '../../../shared/components/editble-table/editable-table';
@@ -9,8 +10,13 @@ import {
   PaginationEvent,
   TableColumn,
 } from '../../../shared/types/editable-table.types';
-import { TaskDto } from '@task-manager/shared';
-import { Category, User, TaskTableRow } from 'apps/frontend/src/app/features/task-management/tasks-table/tasks-table.types';
+import { TaskDto, TaskStatus, UpdateTaskDto } from '@task-manager/shared';
+import {
+  Category,
+  User,
+  TaskTableRow,
+} from 'apps/frontend/src/app/features/task-management/tasks-table/tasks-table.types';
+import { TasksStore } from 'apps/frontend/src/app/stores/tasks.store';
 
 @Component({
   selector: 'app-tasks-table',
@@ -20,38 +26,56 @@ import { Category, User, TaskTableRow } from 'apps/frontend/src/app/features/tas
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksTable {
+  private tasksStore = inject(TasksStore);
   tasks = input<TaskDto[]>([]);
   categories = input<Category[]>([]);
   users = input<User[]>([]);
 
-  columns: TableColumn[] = [
-    { field: 'task', header: 'Task' },
-    { field: 'description', header: 'Description' },
-    { field: 'status', header: 'Status' },
-    { field: 'category', header: 'Category' },
-    { field: 'dueDate', header: 'Due Date' },
-    { field: 'assigned', header: 'Assigned' },
+  taskStatuses = [
+    { label: 'To Do', value: TaskStatus.TODO },
+    { label: 'In Progress', value: TaskStatus.IN_PROGRESS },
+    { label: 'Done', value: TaskStatus.DONE },
   ];
+
+  columns = computed((): TableColumn[] => [
+    { field: 'task', header: 'Task', type: 'text' },
+    { field: 'description', header: 'Description', type: 'textarea' },
+    {
+      field: 'status',
+      header: 'Status',
+      type: 'select',
+      options: this.taskStatuses,
+    },
+    {
+      field: 'category',
+      header: 'Category',
+      type: 'select',
+      options: this.categories().map((c) => ({ label: c.name, value: c.id })),
+    },
+    { field: 'dueDate', header: 'Due Date', type: 'date' },
+    {
+      field: 'assigned',
+      header: 'Assigned',
+      type: 'select',
+      options: this.users().map((u) => ({
+        label: `${u.firstName} ${u.lastName}`,
+        value: u.id,
+      })),
+    },
+  ]);
 
   tableData = computed(() => {
     const tasks = this.tasks();
-    const categories = this.categories();
-    const users = this.users();
 
     return tasks.map((task): TaskTableRow => {
-      const category = categories.find((c) => c.id === task.categoryId);
-      const assignedUser = users.find((u) => u.id === task.assignedTo);
-
       return {
         id: task.id,
         task: task.title,
         description: task.description || '-',
         status: task.status,
-        category: category?.name || '-',
-        dueDate: new Date(task.dueDate).toLocaleDateString(),
-        assigned: assignedUser
-          ? `${assignedUser.firstName} ${assignedUser.lastName}`
-          : '-',
+        category: task.categoryId,
+        dueDate: new Date(task.dueDate),
+        assigned: task.assignedTo,
       };
     });
   });
@@ -59,5 +83,31 @@ export class TasksTable {
   onPaginationChange(event: PaginationEvent): void {
     console.log('Pagination changed:', event);
     // TODO: Fetch new data from API based on pagination
+  }
+
+  onRowSave(event: { index: number; data: any }): void {
+    const taskData: UpdateTaskDto = {
+      categoryId: event.data.category,
+      assignedTo: event.data.assigned,
+      title: event.data.task,
+      description: event.data.description,
+      status: event.data.status,
+      dueDate: event.data.dueDate,
+    };
+    try {
+      this.tasksStore.updateTask(event.data.id, taskData);
+      alert('Task updated successfully!');
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  onRowDelete(row: any): void {
+    try {
+      this.tasksStore.deleteTask(row.id);
+      alert('Task deleted successfully!');
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

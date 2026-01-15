@@ -15,6 +15,6 @@ export interface TaskTableRow {
   description: string;
   status: string;
   category: string;
-  dueDate: string;
+  dueDate: Date;
   assigned: string;
 }

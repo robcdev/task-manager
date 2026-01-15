@@ -1,8 +1,11 @@
 <app-editable-table
   [data]="tableData()"
-  [columns]="columns"
+  [columns]="columns()"
   [totalItems]="tasks().length"
   [pageSize]="10"
   [pageIndex]="0"
+  [showActions]="true"
   (paginationChange)="onPaginationChange($event)"
+  (rowSave)="onRowSave($event)"
+  (rowDelete)="onRowDelete($event)"
 />
