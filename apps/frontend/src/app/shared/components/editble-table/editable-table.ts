@@ -133,4 +133,8 @@ export class EditableTable {
 
     return field.split('.').reduce((obj, key) => obj?.[key], data);
   }
+
+  isEditable(column: TableColumn): boolean {
+    return column.editable !== false;
+  }
 }

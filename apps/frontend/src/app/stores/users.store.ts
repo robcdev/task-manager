@@ -9,18 +9,29 @@ export class UsersStore {
   private _users = signal<UserDto[]>([]);
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
+  private _totalPages = signal<number>(0);
+  private _currentPage = signal<number>(1);
+  private _total = signal<number>(0);
+  private _pageSize = signal<number>(10);
 
   readonly users = this._users.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
+  readonly totalPages = this._totalPages.asReadonly();
+  readonly currentPage = this._currentPage.asReadonly();
+  readonly total = this._total.asReadonly();
 
-  loadUsers(): void {
+  loadUsers(page = 1, limit = 10): void {
     this._loading.set(true);
     this._error.set(null);
 
-    this.userService.findAllUsers().subscribe({
+    this.userService.findAllUsers(page, limit).subscribe({
       next: (response) => {
         this._users.set(response.data);
+        this._totalPages.set(response.totalPages);
+        this._currentPage.set(response.page);
+        this._total.set(response.total);
+        this._pageSize.set(limit);
         this._loading.set(false);
       },
       error: (err) => {
@@ -35,9 +46,8 @@ export class UsersStore {
     this._error.set(null);
 
     this.userService.createUser(createUserDto).subscribe({
-      next: (response) => {
-        this._users.update((users) => [response.data, ...users]);
-        this._loading.set(false);
+      next: () => {
+        this.loadUsers(1, this._pageSize());
       },
       error: (err) => {
         this._error.set(err.message || 'Failed to create user');
@@ -46,16 +56,13 @@ export class UsersStore {
     });
   }
 
-  updateUser(id: number, updateUserDto: UpdateUserDto): void {
+  updateUser(id: string, updateUserDto: UpdateUserDto): void {
     this._loading.set(true);
     this._error.set(null);
 
     this.userService.updateUser(id, updateUserDto).subscribe({
-      next: (response) => {
-        this._users.update((users) =>
-          users.map((user) => (user.id === response.data.id ? response.data : user))
-        );
-        this._loading.set(false);
+      next: () => {
+        this.loadUsers(this._currentPage(), this._pageSize());
       },
       error: (err) => {
         this._error.set(err.message || 'Failed to update user');
@@ -64,16 +71,22 @@ export class UsersStore {
     });
   }
 
-  deleteUser(id: number): void {
+  deleteUser(id: string): void {
     this._loading.set(true);
     this._error.set(null);
 
     this.userService.deleteUser(id).subscribe({
       next: () => {
-        this._users.update((users) =>
-          users.filter((user) => user.id !== id.toString())
-        );
-        this._loading.set(false);
+        const currentPage = this._currentPage();
+        const pageSize = this._pageSize();
+        const currentUsersCount = this._users().length;
+
+        let newPage = currentPage;
+        if (currentUsersCount === 1 && currentPage > 1) {
+          newPage = currentPage - 1;
+        }
+
+        this.loadUsers(newPage, pageSize);
       },
       error: (err) => {
         this._error.set(err.message || 'Failed to delete user');

@@ -6,12 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import {
   CreateCategoryDto,
   UpdateCategoryDto,
   CategoryDto,
+  PaginatedResponse,
   ApiResponse,
 } from '@task-manager/shared';
 
@@ -27,13 +31,16 @@ export class CategoryController {
   }
 
   @Get()
-  findAll(): Promise<ApiResponse<CategoryDto[]>> {
-    return this.categoryService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(25), ParseIntPipe) limit: number,
+  ): Promise<PaginatedResponse<CategoryDto>> {
+    return this.categoryService.findAll({ page, limit });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<ApiResponse<CategoryDto>> {
-    return this.categoryService.findOne(+id);
+    return this.categoryService.findOne(id);
   }
 
   @Patch(':id')
@@ -41,11 +48,11 @@ export class CategoryController {
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<ApiResponse<CategoryDto>> {
-    return this.categoryService.update(+id, updateCategoryDto);
+    return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<ApiResponse<null>> {
-    return this.categoryService.remove(+id);
+    return this.categoryService.remove(id);
   }
 }

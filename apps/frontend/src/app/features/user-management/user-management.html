@@ -1,4 +1,5 @@
 <app-custom-card title="User Management">
   <div card-header-right><app-entity-quick-creator /></div>
-  <p>Section for managing users that will be assigned to the tasks.</p>
+
+  <app-users-table [users]="users()" />
 </app-custom-card>

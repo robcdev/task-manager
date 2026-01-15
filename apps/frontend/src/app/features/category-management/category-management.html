@@ -1,4 +1,7 @@
 <app-custom-card title="Category Management">
   <div card-header-right><app-entity-quick-creator /></div>
-  <p>Section for managing categories that will be assigned to the tasks.</p>
+  <app-categories-table
+    [categories]="categories()"
+    [users]="users()"
+  />
 </app-custom-card>

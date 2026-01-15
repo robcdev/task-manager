@@ -5,6 +5,8 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
   CategoryDto,
+  PaginatedResponse,
+  PaginationQuery,
   ApiResponse,
   toISOString,
 } from '@task-manager/shared';
@@ -28,22 +30,36 @@ export class CategoryService {
     };
   }
 
-  async findAll(): Promise<ApiResponse<CategoryDto[]>> {
-    const categories = await this.categoryRepository.find({
+  async findAll(
+    paginationQuery: PaginationQuery,
+  ): Promise<PaginatedResponse<CategoryDto>> {
+    const page = paginationQuery.page || 1;
+    const limit = paginationQuery.limit || 25;
+    const skip = (page - 1) * limit;
+
+    const [categories, total] = await this.categoryRepository.findAndCount({
       relations: ['creator'],
       order: {
         createdAt: 'DESC',
       },
+      skip,
+      take: limit,
     });
+
+    const totalPages = Math.ceil(total / limit);
 
     return {
       data: categories.map((category) => this.mapToDto(category)),
+      total,
+      page,
+      limit,
+      totalPages,
     };
   }
 
-  async findOne(id: number): Promise<ApiResponse<CategoryDto>> {
+  async findOne(id: string): Promise<ApiResponse<CategoryDto>> {
     const category = await this.categoryRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
       relations: ['creator'],
     });
 
@@ -57,11 +73,11 @@ export class CategoryService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<ApiResponse<CategoryDto>> {
     const category = await this.categoryRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
     });
 
     if (!category) {
@@ -76,9 +92,9 @@ export class CategoryService {
     };
   }
 
-  async remove(id: number): Promise<ApiResponse<null>> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     const category = await this.categoryRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
     });
 
     if (!category) {

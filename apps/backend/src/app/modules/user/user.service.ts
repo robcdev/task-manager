@@ -5,6 +5,8 @@ import {
   CreateUserDto,
   UpdateUserDto,
   UserDto,
+  PaginatedResponse,
+  PaginationQuery,
   ApiResponse,
   toISOString,
 } from '@task-manager/shared';
@@ -26,21 +28,35 @@ export class UserService {
     };
   }
 
-  async findAll(): Promise<ApiResponse<UserDto[]>> {
-    const users = await this.userRepository.find({
+  async findAll(
+    paginationQuery: PaginationQuery,
+  ): Promise<PaginatedResponse<UserDto>> {
+    const page = paginationQuery.page || 1;
+    const limit = paginationQuery.limit || 25;
+    const skip = (page - 1) * limit;
+
+    const [users, total] = await this.userRepository.findAndCount({
       order: {
         createdAt: 'DESC',
       },
+      skip,
+      take: limit,
     });
+
+    const totalPages = Math.ceil(total / limit);
 
     return {
       data: users.map((user) => this.mapToDto(user)),
+      total,
+      page,
+      limit,
+      totalPages,
     };
   }
 
-  async findOne(id: number): Promise<ApiResponse<UserDto>> {
+  async findOne(id: string): Promise<ApiResponse<UserDto>> {
     const user = await this.userRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
     });
 
     if (!user) {
@@ -52,9 +68,12 @@ export class UserService {
     };
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<ApiResponse<UserDto>> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<ApiResponse<UserDto>> {
     const user = await this.userRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
     });
 
     if (!user) {
@@ -69,9 +88,9 @@ export class UserService {
     };
   }
 
-  async remove(id: number): Promise<ApiResponse<null>> {
+  async remove(id: string): Promise<ApiResponse<null>> {
     const user = await this.userRepository.findOne({
-      where: { id: id.toString() },
+      where: { id },
     });
 
     if (!user) {

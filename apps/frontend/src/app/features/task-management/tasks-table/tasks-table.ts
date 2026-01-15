@@ -86,7 +86,6 @@ export class TasksTable {
   });
 
   onPaginationChange(event: PaginationEvent): void {
-    // Material paginator uses 0-based index, API uses 1-based page numbers
     const page = event.pageIndex + 1;
     const limit = event.pageSize;
     this.tasksStore.loadTasks(page, limit);

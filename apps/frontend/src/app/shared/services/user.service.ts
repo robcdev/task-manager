@@ -1,11 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   UserDto,
   CreateUserDto,
   UpdateUserDto,
   ApiResponse,
+  PaginatedResponse,
 } from '@task-manager/shared';
 import { config } from '../../config/config';
 
@@ -18,16 +19,23 @@ export class UserService {
     return this.http.post<ApiResponse<UserDto>>(this.baseUrl, createUserDto);
   }
 
-  findAllUsers(): Observable<ApiResponse<UserDto[]>> {
-    return this.http.get<ApiResponse<UserDto[]>>(this.baseUrl);
+  findAllUsers(
+    page = 1,
+    limit = 25
+  ): Observable<PaginatedResponse<UserDto>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http.get<PaginatedResponse<UserDto>>(this.baseUrl, { params });
   }
 
-  findUser(id: number): Observable<ApiResponse<UserDto>> {
+  findUser(id: string): Observable<ApiResponse<UserDto>> {
     return this.http.get<ApiResponse<UserDto>>(`${this.baseUrl}/${id}`);
   }
 
   updateUser(
-    id: number,
+    id: string,
     updateUserDto: UpdateUserDto
   ): Observable<ApiResponse<UserDto>> {
     return this.http.patch<ApiResponse<UserDto>>(
@@ -36,7 +44,7 @@ export class UserService {
     );
   }
 
-  deleteUser(id: number): Observable<ApiResponse<null>> {
+  deleteUser(id: string): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${id}`);
   }
 }

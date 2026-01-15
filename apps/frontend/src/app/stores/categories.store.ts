@@ -9,18 +9,29 @@ export class CategoriesStore {
   private _categories = signal<CategoryDto[]>([]);
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
+  private _totalPages = signal<number>(0);
+  private _currentPage = signal<number>(1);
+  private _total = signal<number>(0);
+  private _pageSize = signal<number>(10);
 
   readonly categories = this._categories.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
+  readonly totalPages = this._totalPages.asReadonly();
+  readonly currentPage = this._currentPage.asReadonly();
+  readonly total = this._total.asReadonly();
 
-  loadCategories(): void {
+  loadCategories(page = 1, limit = 10): void {
     this._loading.set(true);
     this._error.set(null);
 
-    this.categoryService.findAllCategories().subscribe({
+    this.categoryService.findAllCategories(page, limit).subscribe({
       next: (response) => {
         this._categories.set(response.data);
+        this._totalPages.set(response.totalPages);
+        this._currentPage.set(response.page);
+        this._total.set(response.total);
+        this._pageSize.set(limit);
         this._loading.set(false);
       },
       error: (err) => {
@@ -35,9 +46,8 @@ export class CategoriesStore {
     this._error.set(null);
 
     this.categoryService.createCategory(createCategoryDto).subscribe({
-      next: (response) => {
-        this._categories.update((categories) => [response.data, ...categories]);
-        this._loading.set(false);
+      next: () => {
+        this.loadCategories(1, this._pageSize());
       },
       error: (err) => {
         this._error.set(err.message || 'Failed to create category');
@@ -46,18 +56,13 @@ export class CategoriesStore {
     });
   }
 
-  updateCategory(id: number, updateCategoryDto: UpdateCategoryDto): void {
+  updateCategory(id: string, updateCategoryDto: UpdateCategoryDto): void {
     this._loading.set(true);
     this._error.set(null);
 
     this.categoryService.updateCategory(id, updateCategoryDto).subscribe({
-      next: (response) => {
-        this._categories.update((categories) =>
-          categories.map((category) =>
-            category.id === response.data.id ? response.data : category
-          )
-        );
-        this._loading.set(false);
+      next: () => {
+        this.loadCategories(this._currentPage(), this._pageSize());
       },
       error: (err) => {
         this._error.set(err.message || 'Failed to update category');
@@ -66,16 +71,22 @@ export class CategoriesStore {
     });
   }
 
-  deleteCategory(id: number): void {
+  deleteCategory(id: string): void {
     this._loading.set(true);
     this._error.set(null);
 
     this.categoryService.deleteCategory(id).subscribe({
       next: () => {
-        this._categories.update((categories) =>
-          categories.filter((category) => category.id !== id.toString())
-        );
-        this._loading.set(false);
+        const currentPage = this._currentPage();
+        const pageSize = this._pageSize();
+        const currentCategoriesCount = this._categories().length;
+
+        let newPage = currentPage;
+        if (currentCategoriesCount === 1 && currentPage > 1) {
+          newPage = currentPage - 1;
+        }
+
+        this.loadCategories(newPage, pageSize);
       },
       error: (err) => {
         this._error.set(err.message || 'Failed to delete category');

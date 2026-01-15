@@ -1,11 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   CategoryDto,
   CreateCategoryDto,
   UpdateCategoryDto,
   ApiResponse,
+  PaginatedResponse,
 } from '@task-manager/shared';
 import { config } from '../../config/config';
 
@@ -23,16 +24,23 @@ export class CategoryService {
     );
   }
 
-  findAllCategories(): Observable<ApiResponse<CategoryDto[]>> {
-    return this.http.get<ApiResponse<CategoryDto[]>>(this.baseUrl);
+  findAllCategories(
+    page = 1,
+    limit = 25
+  ): Observable<PaginatedResponse<CategoryDto>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    return this.http.get<PaginatedResponse<CategoryDto>>(this.baseUrl, { params });
   }
 
-  findCategory(id: number): Observable<ApiResponse<CategoryDto>> {
+  findCategory(id: string): Observable<ApiResponse<CategoryDto>> {
     return this.http.get<ApiResponse<CategoryDto>>(`${this.baseUrl}/${id}`);
   }
 
   updateCategory(
-    id: number,
+    id: string,
     updateCategoryDto: UpdateCategoryDto
   ): Observable<ApiResponse<CategoryDto>> {
     return this.http.patch<ApiResponse<CategoryDto>>(
@@ -41,7 +49,7 @@ export class CategoryService {
     );
   }
 
-  deleteCategory(id: number): Observable<ApiResponse<null>> {
+  deleteCategory(id: string): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(`${this.baseUrl}/${id}`);
   }
 }
