@@ -1,11 +1,17 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CreateCategoryDto } from '@task-manager/shared';
-
+import { UsersStore } from 'apps/frontend/src/app/stores/users.store';
+import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-category-creation-dialog',
   imports: [
@@ -14,6 +20,7 @@ import { CreateCategoryDto } from '@task-manager/shared';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
+    MatSelectModule,
   ],
   templateUrl: './category-creation-dialog.html',
   styleUrl: './category-creation-dialog.scss',
@@ -21,15 +28,17 @@ import { CreateCategoryDto } from '@task-manager/shared';
 })
 export class CategoryCreationDialog {
   categoryForm: FormGroup;
+  private usersStore = inject(UsersStore);
+  protected users = this.usersStore.users;
 
   constructor(
     private dialogRef: MatDialogRef<CategoryCreationDialog>,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.categoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
-      createdBy: ['', Validators.required], // TODO: Get from auth service
+      createdBy: [this.users()[0]?.id || ''],
     });
   }
 
@@ -40,7 +49,7 @@ export class CategoryCreationDialog {
   onSave(): void {
     if (this.categoryForm.valid) {
       const categoryData: CreateCategoryDto = this.categoryForm.value;
-      console.log('Category save clicked', categoryData);
+
       this.dialogRef.close({ saved: true, data: categoryData });
     }
   }

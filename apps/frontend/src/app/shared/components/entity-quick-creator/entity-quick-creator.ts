@@ -5,6 +5,9 @@ import { ContextMenuItem } from 'apps/frontend/src/app/shared/types/context-menu
 import { TaskCreationDialog } from '../dialogs/task-creation-dialog/task-creation-dialog';
 import { CategoryCreationDialog } from '../dialogs/category-creation-dialog/category-creation-dialog';
 import { UserCreationDialog } from '../dialogs/user-creation-dialog/user-creation-dialog';
+import { CategoriesStore } from 'apps/frontend/src/app/stores/categories.store';
+import { UsersStore } from 'apps/frontend/src/app/stores/users.store';
+import { TasksStore } from 'apps/frontend/src/app/stores/tasks.store';
 
 const dialogProperties = {
   width: '600px',
@@ -21,6 +24,10 @@ const dialogProperties = {
 export class EntityQuickCreator {
   //TODO: Remove hardcoded strings
   readonly dialog = inject(MatDialog);
+
+  private categoriesStore = inject(CategoriesStore);
+  private usersStore = inject(UsersStore);
+  private tasksStore = inject(TasksStore);
 
   protected entityMenuItems: ContextMenuItem[] = [
     {
@@ -48,8 +55,8 @@ export class EntityQuickCreator {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.saved) {
-        console.log('Task was saved:', result);
-        // Will handle actual save logic later
+        this.tasksStore.createTask(result.data);
+        alert('Task created successfully!');
       } else {
         console.log('Task creation cancelled');
       }
@@ -64,8 +71,8 @@ export class EntityQuickCreator {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.saved) {
-        console.log('Category was saved:', result);
-        // Will handle actual save logic later
+        this.categoriesStore.createCategory(result.data);
+        alert('Category created successfully!');
       } else {
         console.log('Category creation cancelled');
       }
@@ -77,8 +84,8 @@ export class EntityQuickCreator {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.saved) {
-        console.log('User was saved:', result);
-        // Will handle actual save logic later
+        this.usersStore.createUser(result.data);
+        alert('User created successfully!');
       } else {
         console.log('User creation cancelled');
       }

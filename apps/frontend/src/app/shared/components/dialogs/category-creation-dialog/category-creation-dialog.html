@@ -5,10 +5,9 @@
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required />
       @if (categoryForm.get('name')?.hasError('required')) {
-        <mat-error>Name is required</mat-error>
-      }
-      @if (categoryForm.get('name')?.hasError('minlength')) {
-        <mat-error>Name must be at least 3 characters</mat-error>
+      <mat-error>Name is required</mat-error>
+      } @if (categoryForm.get('name')?.hasError('minlength')) {
+      <mat-error>Name must be at least 3 characters</mat-error>
       }
     </mat-form-field>
 
@@ -17,12 +16,16 @@
       <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="half-width">
       <mat-label>Created By</mat-label>
-      <input matInput formControlName="createdBy" required />
-      @if (categoryForm.get('createdBy')?.hasError('required')) {
-        <mat-error>Created By is required</mat-error>
-      }
+
+      <mat-select formControlName="createdBy" required>
+        @for (user of users(); track user.id) {
+        <mat-option [value]="user.id"
+          >{{ user.firstName + ' ' + user.lastName }}</mat-option
+        >
+        }
+      </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
@@ -32,7 +35,8 @@
     mat-raised-button
     color="primary"
     (click)="onSave()"
-    [disabled]="!categoryForm.valid">
+    [disabled]="!categoryForm.valid"
+  >
     Save
   </button>
 </mat-dialog-actions>

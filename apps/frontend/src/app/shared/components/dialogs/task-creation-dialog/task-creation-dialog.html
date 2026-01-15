@@ -5,13 +5,11 @@
       <mat-label>Title</mat-label>
       <input matInput formControlName="title" required />
       @if (taskForm.get('title')?.hasError('required')) {
-        <mat-error>Title is required</mat-error>
-      }
-      @if (taskForm.get('title')?.hasError('minlength')) {
-        <mat-error>Title must be at least 3 characters</mat-error>
-      }
-      @if (taskForm.get('title')?.hasError('maxlength')) {
-        <mat-error>Title cannot exceed 100 characters</mat-error>
+      <mat-error>Title is required</mat-error>
+      } @if (taskForm.get('title')?.hasError('minlength')) {
+      <mat-error>Title must be at least 3 characters</mat-error>
+      } @if (taskForm.get('title')?.hasError('maxlength')) {
+      <mat-error>Title cannot exceed 100 characters</mat-error>
       }
     </mat-form-field>
 
@@ -19,7 +17,7 @@
       <mat-label>Description</mat-label>
       <textarea matInput formControlName="description" rows="3"></textarea>
       @if (taskForm.get('description')?.hasError('maxlength')) {
-        <mat-error>Description cannot exceed 500 characters</mat-error>
+      <mat-error>Description cannot exceed 500 characters</mat-error>
       }
     </mat-form-field>
 
@@ -27,8 +25,8 @@
       <mat-form-field appearance="outline" class="half-width">
         <mat-label>Status</mat-label>
         <mat-select formControlName="status" required>
-          @for (status of taskStatuses; track status) {
-            <mat-option [value]="status">{{ status }}</mat-option>
+          @for (status of taskStatuses; track status.value) {
+          <mat-option [value]="status.value">{{ status.label }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -36,45 +34,62 @@
       <mat-form-field appearance="outline" class="half-width">
         <mat-label>Priority</mat-label>
         <mat-select formControlName="priority" required>
-          @for (priority of taskPriorities; track priority) {
-            <mat-option [value]="priority">{{ priority }}</mat-option>
+          @for (priority of taskPriorities; track priority.value) {
+          <mat-option [value]="priority.value">{{ priority.label }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
     </div>
-
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="half-width">
       <mat-label>Category</mat-label>
-      <input matInput formControlName="categoryId" required placeholder="Category ID" />
-      @if (taskForm.get('categoryId')?.hasError('required')) {
-        <mat-error>Category is required</mat-error>
-      }
+
+      <mat-select formControlName="categoryId" required>
+        @for (category of categories(); track category.id) {
+        <mat-option [value]="category.id">{{ category.name }}</mat-option>
+        }
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Due Date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="dueDate" required />
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        formControlName="dueDate"
+        required
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
       @if (taskForm.get('dueDate')?.hasError('required')) {
-        <mat-error>Due date is required</mat-error>
+      <mat-error>Due date is required</mat-error>
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="half-width">
       <mat-label>Assigned To</mat-label>
-      <input matInput formControlName="assignedTo" required placeholder="User ID" />
-      @if (taskForm.get('assignedTo')?.hasError('required')) {
-        <mat-error>Assigned To is required</mat-error>
-      }
+
+      <mat-select formControlName="assignedTo" required>
+        @for (user of users(); track user.id) {
+        <mat-option [value]="user.id"
+          >{{ user.firstName + ' ' + user.lastName }}</mat-option
+        >
+        }
+      </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="half-width">
       <mat-label>Created By</mat-label>
-      <input matInput formControlName="createdBy" required placeholder="User ID" />
-      @if (taskForm.get('createdBy')?.hasError('required')) {
-        <mat-error>Created By is required</mat-error>
-      }
+
+      <mat-select formControlName="createdBy" required>
+        @for (user of users(); track user.id) {
+        <mat-option [value]="user.id"
+          >{{ user.firstName + ' ' + user.lastName }}</mat-option
+        >
+        }
+      </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
@@ -84,7 +99,8 @@
     mat-raised-button
     color="primary"
     (click)="onSave()"
-    [disabled]="!taskForm.valid">
+    [disabled]="!taskForm.valid"
+  >
     Save
   </button>
 </mat-dialog-actions>

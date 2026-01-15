@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -18,6 +18,8 @@ import {
   CreateTaskDto,
   TASK_VALIDATION,
 } from '@task-manager/shared';
+import { UsersStore } from 'apps/frontend/src/app/stores/users.store';
+import { CategoriesStore } from 'apps/frontend/src/app/stores/categories.store';
 
 @Component({
   selector: 'app-task-creation-dialog',
@@ -38,8 +40,21 @@ import {
 export class TaskCreationDialog {
   taskForm: FormGroup;
 
-  taskStatuses = Object.values(TaskStatus);
-  taskPriorities = Object.values(TaskPriority);
+  taskStatuses = [
+    { label: 'To Do', value: TaskStatus.TODO },
+    { label: 'In Progress', value: TaskStatus.IN_PROGRESS },
+    { label: 'Done', value: TaskStatus.DONE },
+  ];
+  taskPriorities = [
+    { label: 'Low', value: TaskPriority.LOW },
+    { label: 'Medium', value: TaskPriority.MEDIUM },
+    { label: 'High', value: TaskPriority.HIGH },
+  ];
+
+  private usersStore = inject(UsersStore);
+  private categoriesStore = inject(CategoriesStore);
+  protected users = this.usersStore.users;
+  protected categories = this.categoriesStore.categories;
 
   constructor(
     private dialogRef: MatDialogRef<TaskCreationDialog>,
@@ -60,10 +75,10 @@ export class TaskCreationDialog {
       ],
       status: [TaskStatus.TODO, Validators.required],
       priority: [TaskPriority.MEDIUM, Validators.required],
-      categoryId: ['', Validators.required], // TODO: Load categories from store
+      categoryId: [this.categories()[0]?.id || ''],
       dueDate: ['', Validators.required],
-      assignedTo: ['', Validators.required], // TODO: Load users from store
-      createdBy: ['', Validators.required], // TODO: Get from auth service
+      assignedTo: [this.users()[0]?.id || ''],
+      createdBy: [this.users()[0]?.id || ''],
     });
   }
 
@@ -77,7 +92,6 @@ export class TaskCreationDialog {
         ...this.taskForm.value,
         dueDate: this.taskForm.value.dueDate?.toISOString(),
       };
-      console.log('Task save clicked', taskData);
       this.dialogRef.close({ saved: true, data: taskData });
     }
   }
