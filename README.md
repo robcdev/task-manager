@@ -1,77 +1,115 @@
-# TaskManager
+# Task Manager
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A full-stack task management app built with an Angular frontend and a NestJS API, using PostgreSQL for persistence. The repo is an Nx workspace.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## What's inside
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- `apps/frontend`: Angular UI (Material)
+- `apps/backend`: NestJS API (TypeORM)
+- `libs/shared`: shared DTOs/types used by both apps
 
-## Finish your remote caching setup
+## Prerequisites
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/iI1kZFM8if)
+- Node.js 20+ and npm
+- PostgreSQL 16+ (local dev) OR Docker + Docker Compose (containerized dev)
 
+## Environment setup
 
-## Run tasks
-
-To run tasks with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-For example:
+1. Copy the example env file:
 
 ```sh
-npx nx build myproject
+cp .env.example .env
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+2. Adjust values in `.env` if needed (ports, DB credentials, etc.).
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
-```
-
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+## Run with Docker (recommended)
 
 ```sh
-# Generate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
+docker-compose up -d
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+Access:
+- Frontend: `http://localhost:4200`
+- Backend: `http://localhost:3000`
+- pgAdmin: `http://localhost:5050`
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+For more Docker details (pgAdmin setup, logs, troubleshooting), see `DOCKER.md`.
 
+## Run locally (no Docker)
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+1. Install dependencies:
 
-## Install Nx Console
+```sh
+npm install
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+2. Start PostgreSQL locally using the same settings from `.env`. Example:
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```sh
+createdb -h localhost -p 5432 -U admin task_manager
+```
 
-## Useful links
+3. Start both apps:
 
-Learn more:
+```sh
+npm run dev
+```
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Or run them separately:
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```sh
+npm run start:be
+npm run start:fe
+```
+
+## Useful scripts
+
+- `npm run dev`: serve frontend + backend in parallel
+- `npm run start:fe`: serve frontend only
+- `npm run start:be`: serve backend only
+- `npm run seed`: seed the database
+- `npm run seed:clear`: clear seeded data
+- `npm run test`: run frontend + backend tests
+- `npm run lint`: lint all projects
+
+## Seeding the database
+
+Local (no Docker):
+
+```sh
+npm run seed
+```
+
+To clear seeded data:
+
+```sh
+npm run seed:clear
+```
+
+Docker:
+
+```sh
+docker-compose exec backend npm run seed
+```
+
+Clear seeded data in Docker:
+
+```sh
+docker-compose exec backend npm run seed:clear
+```
+
+## Notes
+
+- The backend reads DB config from `.env`.
+- The frontend reads `API_URL` from `.env` (used for API base URL).
+
+## Troubleshooting
+
+- Port already in use: update `BACKEND_PORT`/`FRONTEND_PORT` in `.env`, then restart.
+- DB connection errors: confirm PostgreSQL is running and matches `.env` values.
+- Docker rebuild after deps change:
+
+```sh
+docker-compose up -d --build
+```
