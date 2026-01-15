@@ -31,6 +31,11 @@ export class TasksTable {
   categories = input<Category[]>([]);
   users = input<User[]>([]);
 
+  // Pagination state from store
+  protected total = this.tasksStore.total;
+  protected currentPage = this.tasksStore.currentPage;
+  protected pageSize = 10;
+
   taskStatuses = [
     { label: 'To Do', value: TaskStatus.TODO },
     { label: 'In Progress', value: TaskStatus.IN_PROGRESS },
@@ -81,8 +86,10 @@ export class TasksTable {
   });
 
   onPaginationChange(event: PaginationEvent): void {
-    console.log('Pagination changed:', event);
-    // TODO: Fetch new data from API based on pagination
+    // Material paginator uses 0-based index, API uses 1-based page numbers
+    const page = event.pageIndex + 1;
+    const limit = event.pageSize;
+    this.tasksStore.loadTasks(page, limit);
   }
 
   onRowSave(event: { index: number; data: any }): void {

@@ -16,7 +16,7 @@ export class App implements OnInit {
   private usersStore = inject(UsersStore);
   ngOnInit(): void {
     this.categoriesStore.loadCategories();
-    this.tasksStore.loadTasks();
+    this.tasksStore.loadTasks(1, 10);
     this.usersStore.loadUsers();
   }
 }

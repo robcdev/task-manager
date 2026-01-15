@@ -1,9 +1,9 @@
 <app-editable-table
   [data]="tableData()"
   [columns]="columns()"
-  [totalItems]="tasks().length"
-  [pageSize]="10"
-  [pageIndex]="0"
+  [totalItems]="total()"
+  [pageSize]="pageSize"
+  [pageIndex]="currentPage() - 1"
   [showActions]="true"
   (paginationChange)="onPaginationChange($event)"
   (rowSave)="onRowSave($event)"
