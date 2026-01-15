@@ -1,0 +1,8 @@
+<app-editable-table
+  [data]="tableData()"
+  [columns]="columns"
+  [totalItems]="tasks().length"
+  [pageSize]="10"
+  [pageIndex]="0"
+  (paginationChange)="onPaginationChange($event)"
+/>

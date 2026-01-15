@@ -1,0 +1,31 @@
+<div class="table-container">
+  <div class="flex-table">
+    <!-- Header Row -->
+    <div class="table-header">
+      @for (column of columns(); track column.field) {
+      <div class="table-cell header-cell">{{ column.header }}</div>
+      }
+    </div>
+
+    <!-- Data Rows -->
+    @if (data().length > 0) { @for (row of data(); track $index) {
+    <div class="table-row">
+      @for (column of columns(); track column.field) {
+      <div class="table-cell">{{ getColumnValue(row, column.field) }}</div>
+      }
+    </div>
+    } } @else {
+    <div class="no-data">No data available</div>
+    }
+  </div>
+
+  <mat-paginator
+    [length]="totalItems()"
+    [pageSize]="pageSize()"
+    [pageIndex]="pageIndex()"
+    [pageSizeOptions]="pageSizeOptions()"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+</div>

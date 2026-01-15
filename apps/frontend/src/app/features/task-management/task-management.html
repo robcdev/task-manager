@@ -1,4 +1,8 @@
 <app-custom-card title="Task List">
   <div card-header-right><app-entity-quick-creator /></div>
-  <p>Welcome to the Task Management feature!</p>
+  <app-tasks-table
+    [tasks]="tasks()"
+    [categories]="categories()"
+    [users]="users()"
+  />
 </app-custom-card>

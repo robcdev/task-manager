@@ -6,6 +6,7 @@ import {
   UpdateCategoryDto,
   CategoryDto,
   ApiResponse,
+  toISOString,
 } from '@task-manager/shared';
 import { Category } from './entities/category.entity';
 
@@ -97,8 +98,8 @@ export class CategoryService {
       name: category.name,
       description: category.description,
       createdBy: category.createdBy,
-      createdAt: category.createdAt.toISOString(),
-      updatedAt: category.updatedAt.toISOString(),
+      createdAt: toISOString(category.createdAt),
+      updatedAt: toISOString(category.updatedAt),
     };
   }
 }

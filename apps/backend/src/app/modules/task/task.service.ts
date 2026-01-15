@@ -8,6 +8,7 @@ import {
   PaginatedResponse,
   PaginationQuery,
   ApiResponse,
+  toISOString,
 } from '@task-manager/shared';
 import { Task } from './entities/task.entity';
 
@@ -113,11 +114,11 @@ export class TaskService {
       status: task.status,
       priority: task.priority,
       categoryId: task.categoryId,
-      dueDate: task.dueDate.toISOString(),
+      dueDate: toISOString(task.dueDate),
       assignedTo: task.assignedTo,
       createdBy: task.createdBy,
-      createdAt: task.createdAt.toISOString(),
-      updatedAt: task.updatedAt.toISOString(),
+      createdAt: toISOString(task.createdAt),
+      updatedAt: toISOString(task.updatedAt),
     };
   }
 }

@@ -6,6 +6,7 @@ import {
   UpdateUserDto,
   UserDto,
   ApiResponse,
+  toISOString,
 } from '@task-manager/shared';
 import { User } from './entities/user.entity';
 
@@ -91,8 +92,8 @@ export class UserService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
+      createdAt: toISOString(user.createdAt),
+      updatedAt: toISOString(user.updatedAt),
     };
   }
 }
