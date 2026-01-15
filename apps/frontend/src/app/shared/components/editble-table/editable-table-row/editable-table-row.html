@@ -1,0 +1,118 @@
+<div class="table-row">
+  @for (column of columns(); track column.field) {
+  <div class="table-cell">
+    @if (isEditing() && isEditable(column)) {
+    <!-- Editable Fields -->
+    @switch (column.type) {
+    @case ('textarea') {
+    <mat-form-field appearance="outline" class="table-input">
+      <textarea
+        matInput
+        [value]="getEditingValue(column.field)"
+        (input)="onFieldChange(column.field, $any($event.target).value)"
+        rows="2"
+        [disabled]="!isEditable(column)"
+      ></textarea>
+    </mat-form-field>
+    }
+    @case ('select') {
+    <mat-form-field appearance="outline" class="table-input">
+      <mat-select
+        [value]="getEditingValue(column.field)"
+        (selectionChange)="onFieldChange(column.field, $event.value)"
+        [disabled]="!isEditable(column)"
+      >
+        @for (option of column.options; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    }
+    @case ('date') {
+    <mat-form-field appearance="outline" class="table-input">
+      <input
+        matInput
+        [matDatepicker]="datePicker"
+        [value]="getEditingValue(column.field)"
+        (dateChange)="onFieldChange(column.field, $event.value)"
+        [disabled]="!isEditable(column)"
+      />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="datePicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+    }
+    @case ('number') {
+    <mat-form-field appearance="outline" class="table-input">
+      <input
+        matInput
+        type="number"
+        [value]="getEditingValue(column.field)"
+        (input)="onFieldChange(column.field, $any($event.target).valueAsNumber)"
+        [disabled]="!isEditable(column)"
+      />
+    </mat-form-field>
+    }
+    @default {
+    <mat-form-field appearance="outline" class="table-input">
+      <input
+        matInput
+        [value]="getEditingValue(column.field)"
+        (input)="onFieldChange(column.field, $any($event.target).value)"
+        [disabled]="!isEditable(column)"
+      />
+    </mat-form-field>
+    }
+    }
+    }
+    @else {
+    <!-- Display Mode -->
+    {{ getColumnValue(row(), column.field, column) }}
+    }
+  </div>
+  }
+  @if (showActions()) {
+  <div class="table-cell actions-cell">
+    @if (isEditing()) {
+    <!-- Save and Cancel Buttons -->
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="onSave()"
+      title="Save"
+    >
+      <mat-icon>save</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="onCancel()"
+      title="Cancel"
+    >
+      <mat-icon>cancel</mat-icon>
+    </button>
+    }
+    @else {
+    <!-- Edit and Delete Buttons -->
+    <button
+      mat-icon-button
+      color="primary"
+      (click)="onEdit()"
+      title="Edit"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      color="warn"
+      (click)="onDelete()"
+      title="Delete"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+    }
+  </div>
+  }
+</div>
